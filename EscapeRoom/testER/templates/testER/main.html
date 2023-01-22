@@ -1,0 +1,7 @@
+{% extends "testER/base.html"%}
+{% block content %}
+    {% for room in rooms %}
+        <h1> <a href="{% url 'post-detail' room.id %}"> Nazwa pokoju - {{room.nazwa}}</a> </h1>
+
+    {% endfor %}
+{% endblock content %}

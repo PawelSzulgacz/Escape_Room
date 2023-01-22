@@ -1,0 +1,15 @@
+{% extends "testER/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div>
+    <form method="POST">
+      {% csrf_token %}
+      <legend>Log in</legend>
+      {{ form|crispy }}
+      <button type = "submit">Log in</button>
+    </form>
+    </div>
+    <div>
+      <small><a href="{% url 'register' %}"> Do You Need An Account? </a></small>
+    </div>
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends "testER/base.html"%}
+{% block content %}
+        <h1> Nazwa pokoju - {{object.nazwa}} </h1>
+        <p> Kategoria - {{object.kategoria}}</p>
+        <p> Kategoria - {{object.opis}}</p>
+        <p> Trudnosc - {{object.trudnosc}}</p>
+        <p> Czas na przejście - {{object.max_czas}}</p>
+        <p> Cena - {{object.kat_cenowa.cena}}</p>
+
+{% if user.profile.user_type == "W" %}
+        <a href="{% url 'post-delete' object.id %}"> Delete room </a>
+        <a href="{% url 'post-update' object.id %}"> Modify room </a>
+{% else %}
+        <a href="{% url 'add_reservation' object.id %}"> Add reservation </a>
+        <a href="{% url 'make-review' object.id %}"> Add review </a>
+{% endif %}
+
+<br><br>
+        {% for review in reviews %}
+<p> {{ review.klient_id.user.username }} </p>
+                {{ review.ocena }} ----
+                {{ review.komentarz }}
+        <hr>
+        {% endfor %}
+{% endblock content %}

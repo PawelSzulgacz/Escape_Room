@@ -1,0 +1,9 @@
+{% extends "testER/base.html"%}
+{% block content %}
+    {% for res in reservations %}
+        <h1> {{ res.pokoj_id.nazwa }}</h1>
+        <p> {{ res.data }} </p>
+        <p> {{ res.godzina }} </p>
+        <hr>
+    {% endfor %}
+{% endblock content %}

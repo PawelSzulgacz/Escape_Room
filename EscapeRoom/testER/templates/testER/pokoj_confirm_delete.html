@@ -1,0 +1,14 @@
+{% extends "testER/base.html"%}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <h1>Delete room</h1>
+    <form method="POST">
+    {% csrf_token %}
+    Are you sure you want to delete room "{{ object.nazwa }}"
+    <div>
+    <button class type="submit">Yes, Delete</button>
+    <button href="{% url 'post-detail' object.id %}">Cancel</button>
+    </div>
+    </form>
+{% endblock content %}
