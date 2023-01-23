@@ -5,9 +5,13 @@ from django.urls import reverse
 from django.shortcuts import render
 
 class Promocje(models.Model):
-    data_rozpoczecia = models.DateField()
-    data_zakonczenia = models.DateField()
+    nazwa = models.CharField(max_length=50,default='promocja')
+    data_rozpoczecia = models.DateField(null=True)
+    data_zakonczenia = models.DateField(null=True)
     procent = models.DecimalField(max_digits=5, decimal_places=2,null=True,)
+
+    def __str__(self):
+        return self.nazwa
 
 class Ceny(models.Model):
     kat_cenowa = models.IntegerField(primary_key=True)
@@ -18,6 +22,12 @@ class EscapeRoom(models.Model):
     adres = models.CharField(max_length=50)
     telefon = models.CharField(max_length=11)
     wlasc_id = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='company')
+
+    def __str__(self):
+        return self.nazwa
+
+    def get_absolute_url(self):
+        return reverse('Escape_Room_app')
 
 class Pokoj(models.Model):
     nazwa = models.CharField(max_length=40)

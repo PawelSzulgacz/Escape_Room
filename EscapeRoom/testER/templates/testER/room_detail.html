@@ -1,5 +1,6 @@
 {% extends "testER/base.html"%}
 {% block content %}
+        <h1> <a href="{% url 'er-rooms' object.firma.id %}"> {{object.firma.nazwa}} </a>  </h1>
         <h1> Nazwa pokoju - {{object.nazwa}} </h1>
         <p> Kategoria - {{object.kategoria}}</p>
         <p> Kategoria - {{object.opis}}</p>

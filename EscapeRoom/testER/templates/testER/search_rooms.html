@@ -1,0 +1,13 @@
+{% extends "testER/base.html"%}
+{% block content %}
+   {% if searched %}
+         <h1> You Searched For {{ searched }}</h1>
+    {% for room in rooms %}
+        <h1> <a href="{% url 'post-detail' room.id %}"> Nazwa pokoju - {{room.nazwa}}</a> </h1>
+
+    {% endfor %}
+   {% else %}
+         <h1> You forgot to search :(</h1>
+   {% endif %}
+
+{% endblock content %}

@@ -7,6 +7,7 @@
 </head>
 <body>
     <div><a href="{% url 'Escape_Room_app' %}"> Main site </a>
+        <a href="{% url 'all-er' %}"> All companies </a>
         {% if user.is_authenticated%}
         <a href="{% url 'profile' %}"> Profile </a>
         <a href="{% url 'logout' %}"> Log out </a></div>
@@ -19,9 +20,18 @@
 
         {% if user.profile.user_type == "W" %}
             <a href="{% url 'post-form-room' %}"> Add room </a>
+            <a href="{% url 'add-er' %}"> Add company </a>
+            <a href="{% url 'yours-er' %}"> Your companies </a>
         {% elif user.profile.user_type == "K" %}
             <a href="{% url 'reservations' %}"> Your Reservations </a>
         {% endif %}
+
+    <div>
+        <form method="post" action="{% url 'search-room' %}">
+            {% csrf_token %}
+        <input type="search" placeholder="Search rooms" name = "searched"> <button type="submit">Search</button>
+        </form>
+    </div>
 
     <h1>{{ user.profile.user_type}}</h1>
 

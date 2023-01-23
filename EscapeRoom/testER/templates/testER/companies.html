@@ -1,0 +1,7 @@
+{% extends "testER/base.html"%}
+{% block content %}
+    {% for er in escaperooms %}
+        <h1> <a href="{% url 'er-rooms' er.id %}"> Nazwa firmy - {{ er.nazwa }}</a> </h1>
+
+    {% endfor %}
+{% endblock content %}
