@@ -5,10 +5,11 @@
     <h1>Delete room</h1>
     <form method="POST">
     {% csrf_token %}
-    Are you sure you want to delete room "{{ object.nazwa }}"
-    <div>
+    Are you sure you want to delete your reservation for "{{ object.pokoj_id.nazwa }} " at {{ object.data }},  {{ object.godzina }}
+      <br>
     <button class type="submit">Yes, Delete</button>
-    <a href="{% url 'post-detail' object.id %}">Cancel</a>
-    </div>
     </form>
+    <a href="{% url 'reservations' %}">Cancel</a>
+
+
 {% endblock content %}

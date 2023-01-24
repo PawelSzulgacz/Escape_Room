@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import AddRoomForm,AddPromotionForm
+from .forms import AddRoomForm#,AddPromotionForm
 
 """
 def home(request):
@@ -88,12 +88,24 @@ class ReservationCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
             return True
         return False
 
+class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Rezerwacje
+    template_name = 'testER/reservation_confirm_delete.html'
+    success_url = '/';
+    def test_func(self):
+        res =  self.get_object()
+        if self.request.user.profile == res.klient_id:
+            return True
+        return False
+
 def your_reservations(request):
     reservations = Rezerwacje.objects.filter(klient_id=request.user.profile)
     res_dict = {
         'reservations' : reservations
     }
     return render(request,"testER/reservations.html", res_dict)
+
+
 
 class ReviewCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
     model = Recenzje
@@ -185,6 +197,7 @@ def search_room(request):
         return render(request, "testER/search_rooms.html")
 
 #promocje
+"""
 class PromotionCreateView(LoginRequiredMixin,UserPassesTestMixin ,CreateView):
     def get(self, request, *args, **kwargs):
         context = {'form': AddPromotionForm(self.request.user)}
@@ -200,3 +213,21 @@ class PromotionCreateView(LoginRequiredMixin,UserPassesTestMixin ,CreateView):
         if self.request.user.profile.user_type == "W":
             return True
         return False
+"""
+
+def change_reservations(request):
+    er = EscapeRoom.objects.filter(wlasc_id=request.user.profile)
+    rooms = Pokoj.objects.filter(firma__in=er)
+    reservations = Rezerwacje.objects.filter(pokoj_id__in=rooms)
+    context = {
+        'rooms':rooms,
+        'reservations':reservations,
+    }
+
+    if request.method == "POST":
+        escaped = request.POST['escaped']
+        time = request.POST['time']
+        id = request.POST['id']
+        print(escaped,time,id)
+        return render(request, 'testER/reservations_to_visited.html', context)
+    return render(request, 'testER/reservations_to_visited.html', context)

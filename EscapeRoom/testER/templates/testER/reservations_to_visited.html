@@ -1,0 +1,21 @@
+{% extends "testER/base.html"%}
+{% block content %}
+    {% for room in rooms %}
+        <h1> {{ room.nazwa }}</h1>
+            {% for res in reservations %}
+                {% if res.pokoj_id == room %}
+                    {{ res.data }}, {{ res.godzina }}, {{ res.klient_id.user.email }}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="checkbox" name="escaped"> Escape in time?
+                        <input type="number" name="time" placeholder="0"> Time left?
+                        <input type="hidden" name="id" value={{res.id}} />
+                        <button>Change to visited</button>
+                    </form>
+                <br>
+                {% endif %}
+            {% endfor %}
+        <hr>
+    {% endfor %}
+{% endblock content %}

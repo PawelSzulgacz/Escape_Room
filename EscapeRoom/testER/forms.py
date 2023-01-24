@@ -10,6 +10,7 @@ class AddRoomForm(forms.ModelForm):
         model = Pokoj
         fields = ['nazwa', 'kategoria', 'opis', 'trudnosc', 'max_czas', 'kat_cenowa','firma']
 
+"""
 class AddPromotionForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super(AddPromotionForm, self).__init__(*args, **kwargs)
@@ -17,4 +18,5 @@ class AddPromotionForm(forms.ModelForm):
 
     class Meta:
         model = Promocje
-        fields = ['nazwa','procent','data_rozpoczecia','data_zakonczenia']
+        fields = ['nazwa','procent','data_rozpoczecia','data_zakonczenia',]
+"""

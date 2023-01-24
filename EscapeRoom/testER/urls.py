@@ -10,6 +10,7 @@ urlpatterns = [
     path('<int:pk>/delete', PostDeleteView.as_view(), name='post-delete'),
     path('<int:pk>/reservation/new', views.ReservationCreateView.as_view(), name='add_reservation'),
     path('reservations/', views.your_reservations, name='reservations'),
+    path('reservations/<int:pk>/delete', ReservationDeleteView.as_view(), name='reservation-delete'),
     path('<int:pk>/review/new', ReviewCreateView.as_view(), name='make-review'),
     path('company/new', ErCreateView.as_view(), name='add-er'),
     path('company/<int:pk>/delete', ErDeleteView.as_view(), name='er-delete'),
@@ -18,5 +19,6 @@ urlpatterns = [
     path('companies', erListView.as_view(), name='all-er'),
     path('company/<int:pker>/rooms', rooms_from_company, name='er-rooms'),
     path('search', search_room, name='search-room'),
+    path('change-reservations', change_reservations, name='res-to-visited'),
 ]
 
