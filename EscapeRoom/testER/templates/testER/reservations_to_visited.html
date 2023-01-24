@@ -8,8 +8,8 @@
 
                     <form method="post">
                         {% csrf_token %}
-                        <input type="checkbox" name="escaped"> Escape in time?
-                        <input type="number" name="time" placeholder="0"> Time left?
+                        Escape in time? <input type="checkbox" name="escaped">
+                         Time left? <input type="number" name="time" placeholder="0">
                         <input type="hidden" name="id" value={{res.id}} />
                         <button>Change to visited</button>
                     </form>

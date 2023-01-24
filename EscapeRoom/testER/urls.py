@@ -20,5 +20,6 @@ urlpatterns = [
     path('company/<int:pker>/rooms', rooms_from_company, name='er-rooms'),
     path('search', search_room, name='search-room'),
     path('change-reservations', change_reservations, name='res-to-visited'),
+    path('stats', see_stats, name='stats-rooms'),
 ]
 

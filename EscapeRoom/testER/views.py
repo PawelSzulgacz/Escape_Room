@@ -225,9 +225,46 @@ def change_reservations(request):
     }
 
     if request.method == "POST":
-        escaped = request.POST['escaped']
         time = request.POST['time']
+        if time == "":
+            time = 0
+
+        if 'escaped' in request.POST:
+            escape = True
+        else:
+            escape = False
+            time = 0
+
         id = request.POST['id']
-        print(escaped,time,id)
+        rez = Rezerwacje.objects.filter(pk=id)
+        Odwiedziny.objects.create(ukonczony=escape,czas_wyjscia=time,klient_id=rez[0].klient_id,pokoj_id=rez[0].pokoj_id,data=rez[0].data)
+        rez[0].delete()
+
         return render(request, 'testER/reservations_to_visited.html', context)
     return render(request, 'testER/reservations_to_visited.html', context)
+
+def see_stats(request):
+    er = EscapeRoom.objects.filter(wlasc_id=request.user.profile)
+    rooms = Pokoj.objects.filter(firma__in=er)
+    percent = []
+    times_visited = []
+    suma = 0
+    for room in rooms:
+        visited = Odwiedziny.objects.filter(pokoj_id=room)
+        for visit in visited:
+            if visit.ukonczony:
+                suma += 1
+        times_visited.append(len(visited))
+        if len(visited) > 0:
+            percent.append(suma/len(visited))
+        else:
+            percent.append(0)
+        suma = 0
+    context = {
+        'EscapeRooms' : er,
+        'times_visited' : times_visited,
+        'percents' : percent,
+        'rooms' : rooms,
+    }
+
+    return render(request, 'testER/your_stats.html',context)
