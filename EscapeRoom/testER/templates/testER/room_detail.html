@@ -2,9 +2,9 @@
 {% block content %}
         <h1> <a href="{% url 'er-rooms' object.firma.id %}"> {{object.firma.nazwa}} </a>  </h1>
         <h1> Nazwa pokoju - {{object.nazwa}} </h1>
-        <p> Kategoria - {{object.kategoria}}</p>
+        <p> Kategoria - {{object.get_kategoria_display}}</p>
         <p> Opis - {{object.opis}}</p>
-        <p> Trudnosc - {{object.trudnosc}}</p>
+        <p> Trudność - {{object.get_trudnosc_display }}</p>
         <p> Czas na przejście - {{object.max_czas}}</p>
         <p> Cena - {{object.kat_cenowa.cena}}</p>
         {% if object.promocje %}

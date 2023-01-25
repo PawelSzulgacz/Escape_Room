@@ -38,9 +38,26 @@ class EscapeRoom(models.Model):
 
 class Pokoj(models.Model):
     nazwa = models.CharField(max_length=40)
-    kategoria = models.CharField(max_length=40)
-    trudnosc = models.IntegerField()
-    max_czas = models.IntegerField()
+    type = [('P', 'Przygodowy'),
+            ('T', 'Thriller'),
+            ('H', 'Horror'),
+            ('Hi', 'Historyczny'),
+            ('F', 'Fabularny'),
+            ('A', 'Akcja'),
+            ('Fan', 'Fantasy'),
+            ('K', 'Kryminalny'),
+            ]
+    typet = [
+        ('Ł', 'Łatwy'),
+        ('Ś', 'Średni'),
+        ('T', 'Trudny'),
+    ]
+    kategoria = models.CharField(max_length=40,choices=type)
+    trudnosc = models.CharField(choices=typet,max_length=10)
+    max_czas = models.IntegerField(validators=[
+            MaxValueValidator(180),
+            MinValueValidator(60)
+        ])
     opis = models.CharField(max_length=500,default="brak")
     firma = models.ForeignKey(EscapeRoom, default=1, on_delete=models.CASCADE)
     kat_cenowa = models.ForeignKey(Ceny, default=1,on_delete=models.SET_DEFAULT)
@@ -55,7 +72,9 @@ class Pokoj(models.Model):
 
 class Odwiedziny(models.Model):
     ukonczony = models.BooleanField()
-    czas_wyjscia = models.IntegerField()
+    czas_wyjscia = models.IntegerField(validators=[
+            MinValueValidator(60)
+        ])
     klient_id = models.ForeignKey(Profile, null=True,on_delete=models.SET_NULL)
     pokoj_id = models.ForeignKey(Pokoj,  null=True,on_delete=models.SET_NULL)
     data = models.DateField()

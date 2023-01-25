@@ -1,5 +1,7 @@
 {% extends "testER/base.html"%}
 {% load crispy_forms_tags %}
 {% block content %}
-{{ user.username }}
+<p> Nazwa użytkownika - {{ user.username }} </p>
+<p> Email - {{ user.email }} </p>
+<p> Data dołączenia - {{ user.date_joined }} </p>
 {% endblock content %}

@@ -27,7 +27,7 @@
             <a href="{% url 'stats-rooms' %}"> Your room Stats</a>
         {% elif user.profile.user_type == "K" %}
             <a href="{% url 'reservations' %}"> Twoje rezerwacje </a>
-            <a href="{% url 'stats-user' %}"> Twoje wizyty </a>
+            <a href="{% url 'stats-user' %}"> Twoje statystyki </a>
         {% endif %}
 
     <div>
@@ -37,7 +37,7 @@
         </form>
     </div>
 
-    <h1>{{ user.profile.user_type}}</h1>
+
 
     {% if messages %}
     {% for message in messages %}

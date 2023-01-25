@@ -36,6 +36,8 @@ class PostCreateView(LoginRequiredMixin,UserPassesTestMixin ,CreateView):
         if form.is_valid():
             room = form.save()
             room.save()
+        else:
+            print("aaaaaaaaaaaaa-----aaaaaaaaaaaaaaaaaaaaaaaaa")
         return redirect('Escape_Room_app')
 
     def test_func(self):
@@ -255,8 +257,12 @@ def user_stats(request):
         if visit.ukonczony:
             sum_of_visits_left += 1
         time_left.append(visit.czas_wyjscia)
+    if len(visited) == 0:
+        avg = 0
+    else:
+        avg = round(mean(time_left))
 
-    stats = [len(visited),sum_of_visits_left,round(mean(time_left))]
+    stats = [len(visited),sum_of_visits_left,avg]
     context = {
         'stats' : stats,
         'visited' : visited,

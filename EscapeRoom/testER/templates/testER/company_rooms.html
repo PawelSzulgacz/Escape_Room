@@ -2,6 +2,8 @@
 {% block content %}
     {% for companies in company %}
     <h1> Firma - {{ companies.nazwa }}</h1>
+    <p> Adres: {{ companies.adres }}</p>
+    <p> Telefon: {{ companies.telefon }}</p>
     {% endfor %}
     {% for room in rooms %}
         <h1> <a href="{% url 'post-detail' room.id %}"> Nazwa pokoju - {{ room.nazwa }}</a> </h1>
