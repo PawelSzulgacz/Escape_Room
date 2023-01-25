@@ -8,7 +8,7 @@ class AddRoomForm(forms.ModelForm):
 
     class Meta:
         model = Pokoj
-        fields = ['nazwa', 'kategoria', 'opis', 'trudnosc', 'max_czas', 'kat_cenowa','firma']
+        fields = ['nazwa', 'kategoria', 'opis', 'trudnosc', 'max_czas', 'kat_cenowa','firma','promocje']
 
 """
 class AddPromotionForm(forms.ModelForm):

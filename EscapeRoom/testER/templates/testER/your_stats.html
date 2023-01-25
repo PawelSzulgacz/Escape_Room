@@ -1,11 +1,11 @@
 {% extends "testER/base.html"%}
 {% block content %}
 
-    {% for room in rooms %}
-        <h1> {{ room.nazwa }}</h1>
-
-
-
+    {% for d in data %}
+        <p>Pokój - {{ d.0 }}</p>
+        <p>Ilość odwiedzin: {{ d.2 }}</p>
+        <p>Średni procent udanych wyjść: {{ d.1 }} %</p>
+        <hr>
     {% endfor %}
 
 

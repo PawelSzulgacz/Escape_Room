@@ -4,7 +4,7 @@ from .models import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import AddRoomForm#,AddPromotionForm
-
+from statistics import mean
 """
 def home(request):
     rooms = Pokoj.objects.all()
@@ -46,11 +46,10 @@ class PostCreateView(LoginRequiredMixin,UserPassesTestMixin ,CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Pokoj
-    fields = ['nazwa','kategoria','opis','trudnosc','max_czas','kat_cenowa']
+    fields = ['nazwa','kategoria','opis','trudnosc','max_czas','kat_cenowa','promocje']
     template_name = 'testER/add_room.html'
 
-    def form_valid(self, form):
-        form.instance.firma = EscapeRoom.objects.get(wlasc_id=self.request.user.profile)
+    def form_valid(self, form, *args, **kwargs):
         return super().form_valid(form)
 
     def test_func(self):
@@ -73,7 +72,6 @@ class ReservationCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
     model = Rezerwacje
     template_name = 'testER/add_reservation.html'
     fields = ['data','godzina']
-
 
     def form_valid(self, form):
         pk = self.request.get_full_path()
@@ -196,24 +194,7 @@ def search_room(request):
     else:
         return render(request, "testER/search_rooms.html")
 
-#promocje
-"""
-class PromotionCreateView(LoginRequiredMixin,UserPassesTestMixin ,CreateView):
-    def get(self, request, *args, **kwargs):
-        context = {'form': AddPromotionForm(self.request.user)}
-        return render(request, 'testER/add_promotion.html', context)
-    def post(self, request, *args, **kwargs):
-        form = AddRoomForm(self.request.user, request.POST)
-        if form.is_valid():
-            prom = form.save()
-            prom.save()
-        return redirect('Escape_Room_app')
 
-    def test_func(self):
-        if self.request.user.profile.user_type == "W":
-            return True
-        return False
-"""
 
 def change_reservations(request):
     er = EscapeRoom.objects.filter(wlasc_id=request.user.profile)
@@ -223,7 +204,6 @@ def change_reservations(request):
         'rooms':rooms,
         'reservations':reservations,
     }
-
     if request.method == "POST":
         time = request.POST['time']
         if time == "":
@@ -243,28 +223,56 @@ def change_reservations(request):
         return render(request, 'testER/reservations_to_visited.html', context)
     return render(request, 'testER/reservations_to_visited.html', context)
 
+
+
 def see_stats(request):
     er = EscapeRoom.objects.filter(wlasc_id=request.user.profile)
     rooms = Pokoj.objects.filter(firma__in=er)
-    percent = []
-    times_visited = []
     suma = 0
+    all = []
     for room in rooms:
         visited = Odwiedziny.objects.filter(pokoj_id=room)
         for visit in visited:
             if visit.ukonczony:
                 suma += 1
-        times_visited.append(len(visited))
         if len(visited) > 0:
-            percent.append(suma/len(visited))
+            all.append([room, round(suma / (len(visited))*100,2), len(visited)])
         else:
-            percent.append(0)
+            all.append([room, 0, len(visited)])
         suma = 0
-    context = {
-        'EscapeRooms' : er,
-        'times_visited' : times_visited,
-        'percents' : percent,
-        'rooms' : rooms,
-    }
 
+    context = {
+        'data' : all
+    }
     return render(request, 'testER/your_stats.html',context)
+
+
+def user_stats(request):
+    visited = Odwiedziny.objects.filter(klient_id=request.user.profile)
+    time_left = []
+    sum_of_visits_left = 0
+    for visit in visited:
+        if visit.ukonczony:
+            sum_of_visits_left += 1
+        time_left.append(visit.czas_wyjscia)
+
+    stats = [len(visited),sum_of_visits_left,round(mean(time_left))]
+    context = {
+        'stats' : stats,
+        'visited' : visited,
+    }
+    return render(request, 'testER/user_stats.html', context)
+
+#promocje
+
+class PromCreateView(LoginRequiredMixin, CreateView):
+    model = Promocje
+    template_name = 'testER/add_promotion.html'
+    fields = ['nazwa', 'data_rozpoczecia', 'data_zakonczenia', 'procent']
+    def form_valid(self, form):
+        return super().form_valid(form)
+    def test_func(self):
+        if self.request.user.profile.user_type == "W":
+            return True
+        return False
+

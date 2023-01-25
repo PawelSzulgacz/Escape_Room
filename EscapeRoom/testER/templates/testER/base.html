@@ -22,10 +22,12 @@
             <a href="{% url 'post-form-room' %}"> Add room </a>
             <a href="{% url 'add-er' %}"> Add company </a>
             <a href="{% url 'yours-er' %}"> Your companies </a>
+            <a href="{% url 'add-prom' %}"> Add promotion </a>
             <a href="{% url 'res-to-visited' %}"> Change to visited</a>
-            <a href="{% url 'stats-rooms' %}"> Stats</a>
+            <a href="{% url 'stats-rooms' %}"> Your room Stats</a>
         {% elif user.profile.user_type == "K" %}
-            <a href="{% url 'reservations' %}"> Your Reservations </a>
+            <a href="{% url 'reservations' %}"> Twoje rezerwacje </a>
+            <a href="{% url 'stats-user' %}"> Twoje wizyty </a>
         {% endif %}
 
     <div>

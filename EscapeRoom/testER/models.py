@@ -8,15 +8,22 @@ class Promocje(models.Model):
     nazwa = models.CharField(max_length=50,default='promocja')
     data_rozpoczecia = models.DateField(null=True)
     data_zakonczenia = models.DateField(null=True)
-    procent = models.DecimalField(max_digits=5, decimal_places=2,null=True,)
+    procent = models.IntegerField(null=True,validators=[
+            MaxValueValidator(100),
+            MinValueValidator(1)
+        ])
 
     def __str__(self):
-        return self.nazwa
+        return f'{self.nazwa} - {self.procent}% od {self.data_rozpoczecia} do {self.data_zakonczenia}'
+
+    def get_absolute_url(self):
+        return reverse('Escape_Room_app')
 
 class Ceny(models.Model):
     kat_cenowa = models.IntegerField(primary_key=True)
     cena = models.DecimalField(max_digits=5, decimal_places=2)
-
+    def __str__(self):
+        return str(self.cena)
 class EscapeRoom(models.Model):
     nazwa = models.CharField(max_length=50)
     adres = models.CharField(max_length=50)
@@ -37,7 +44,7 @@ class Pokoj(models.Model):
     opis = models.CharField(max_length=500,default="brak")
     firma = models.ForeignKey(EscapeRoom, default=1, on_delete=models.CASCADE)
     kat_cenowa = models.ForeignKey(Ceny, default=1,on_delete=models.SET_DEFAULT)
-    promocje = models.ForeignKey(Promocje,blank = True,null=True,on_delete = models.SET_NULL)
+    promocje = models.ForeignKey(Promocje,blank=True,null=True,on_delete = models.SET_NULL)
 
     def __str__(self):
         return self.nazwa

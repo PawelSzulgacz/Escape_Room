@@ -7,10 +7,14 @@
         <p> Trudnosc - {{object.trudnosc}}</p>
         <p> Czas na przejście - {{object.max_czas}}</p>
         <p> Cena - {{object.kat_cenowa.cena}}</p>
+        {% if object.promocje %}
+        <h2>Promocja! Teraz aż {{ object.promocje.procent }}% taniej, tylko do {{ object.promocje.data_zakonczenia }} </h2>
+        {% endif %}
+
 
 {% if user.profile.user_type == "W" and user.profile == object.firma.wlasc_id %}
         <a href="{% url 'post-delete' object.id %}"> Delete room </a>
-        <a href="{% url 'post-update' object.id %}"> Modify room </a>
+        <a href="{% url 'post-update' object.id %}"> Modify room or add promotion </a>
 {% elif user.profile.user_type == "K" %}
         <a href="{% url 'add_reservation' object.id %}"> Add reservation </a>
         <a href="{% url 'make-review' object.id %}"> Add review </a>

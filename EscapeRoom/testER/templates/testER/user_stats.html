@@ -1,0 +1,17 @@
+{% extends "testER/base.html"%}
+{% block content %}
+
+    <h2>Statystki</h2>
+    <p> Odwiedziłeś Escape Roomy {{ stats.0 }} razy </p>
+    <p> Wyszedłeś z nich przed końcem czasu {{ stats.1 }} razy </p>
+    <p> Średnio wychodzisz {{ stats.2 }} minut przed czasem, gratulacje! </p>
+
+    <h2>Odwiedzone pokoje</h2>
+    {% for visit in visited %}
+        <h3>{{ visit.pokoj_id.nazwa }}</h3>
+
+
+    {% endfor%}
+
+
+{% endblock content %}

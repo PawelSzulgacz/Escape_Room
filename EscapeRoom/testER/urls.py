@@ -21,5 +21,7 @@ urlpatterns = [
     path('search', search_room, name='search-room'),
     path('change-reservations', change_reservations, name='res-to-visited'),
     path('stats', see_stats, name='stats-rooms'),
+    path('user_stats', user_stats, name='stats-user'),
+    path('promotion/new', PromCreateView.as_view(), name='add-prom'),
 ]
 
