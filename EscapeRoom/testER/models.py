@@ -55,7 +55,6 @@ class Pokoj(models.Model):
     kategoria = models.CharField(max_length=40,choices=type)
     trudnosc = models.CharField(choices=typet,max_length=10)
     max_czas = models.IntegerField(validators=[
-            MaxValueValidator(180),
             MinValueValidator(60)
         ])
     opis = models.CharField(max_length=500,default="brak")
@@ -72,9 +71,7 @@ class Pokoj(models.Model):
 
 class Odwiedziny(models.Model):
     ukonczony = models.BooleanField()
-    czas_wyjscia = models.IntegerField(validators=[
-            MinValueValidator(60)
-        ])
+    czas_wyjscia = models.IntegerField()
     klient_id = models.ForeignKey(Profile, null=True,on_delete=models.SET_NULL)
     pokoj_id = models.ForeignKey(Pokoj,  null=True,on_delete=models.SET_NULL)
     data = models.DateField()
@@ -99,7 +96,12 @@ class Rezerwacje(models.Model):
     klient_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
     pokoj_id = models.ForeignKey(Pokoj, on_delete=models.CASCADE)
 
+    # class Meta:
+    #     unique_together = ('data','godzina','pokoj_id')
+
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk':self.pokoj_id.id})
+
+
 
 

@@ -23,5 +23,6 @@ urlpatterns = [
     path('stats', see_stats, name='stats-rooms'),
     path('user_stats', user_stats, name='stats-user'),
     path('promotion/new', PromCreateView.as_view(), name='add-prom'),
+
 ]
 

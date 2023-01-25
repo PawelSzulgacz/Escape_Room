@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-    <h1>Delete room</h1>
+    <h1>Delete reservation</h1>
     <form method="POST">
     {% csrf_token %}
     Are you sure you want to delete your reservation for "{{ object.pokoj_id.nazwa }} " at {{ object.data }},  {{ object.godzina }}

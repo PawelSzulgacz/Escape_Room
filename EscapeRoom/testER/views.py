@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import *
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .forms import AddRoomForm#,AddPromotionForm
+from .forms import AddRoomForm,AddResForm, AddPromForm
 from statistics import mean
+from django.urls import reverse,reverse_lazy
 """
 def home(request):
     rooms = Pokoj.objects.all()
@@ -24,20 +25,29 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetailView, self).get_context_data(**kwargs)
-        context['reviews'] = Recenzje.objects.filter(pokoj_id=self.kwargs['pk'])
+        recs = Recenzje.objects.filter(pokoj_id=self.kwargs['pk'])
+        context['reviews'] = recs
+        ocena = []
+        for rec in recs:
+            ocena.append(rec.ocena)
+
+        if len(ocena) == 0:
+            ocena.append(0)
+        context['ocena'] = round(mean(ocena),2)
         return context
 
-class PostCreateView(LoginRequiredMixin,UserPassesTestMixin ,CreateView):
+
+class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def get(self, request, *args, **kwargs):
         context = {'form': AddRoomForm(self.request.user)}
         return render(request, 'testER/add_room.html', context)
+
     def post(self, request, *args, **kwargs):
         form = AddRoomForm(self.request.user, request.POST)
         if form.is_valid():
             room = form.save()
             room.save()
-        else:
-            print("aaaaaaaaaaaaa-----aaaaaaaaaaaaaaaaaaaaaaaaa")
+
         return redirect('Escape_Room_app')
 
     def test_func(self):
@@ -60,33 +70,37 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Pokoj
     template_name = 'testER/pokoj_confirm_delete.html'
-    success_url = '/';
+    success_url = '/'
+
     def test_func(self):
         room =  self.get_object()
         if self.request.user.profile == room.firma.wlasc_id:
             return True
         return False
 
-class ReservationCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
-    model = Rezerwacje
-    template_name = 'testER/add_reservation.html'
-    fields = ['data','godzina']
 
+class ReservationCreateView(LoginRequiredMixin, UserPassesTestMixin,FormView):
+    form_class = AddResForm
+    template_name = 'testER/add_reservation.html'
+    success_url = reverse_lazy('reservations')
     def form_valid(self, form):
         pk = self.request.get_full_path()
         room_id = pk.split("/")[1]
         room = Pokoj.objects.get(pk=room_id)
         form.instance.klient_id = self.request.user.profile
         form.instance.pokoj_id = room
+        form.save()
         return super().form_valid(form)
 
     def test_func(self):
         if self.request.user.profile.user_type == "K":
             return True
         return False
+
 
 class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Rezerwacje
@@ -98,13 +112,13 @@ class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
             return True
         return False
 
+
 def your_reservations(request):
     reservations = Rezerwacje.objects.filter(klient_id=request.user.profile)
     res_dict = {
         'reservations' : reservations
     }
     return render(request,"testER/reservations.html", res_dict)
-
 
 
 class ReviewCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
@@ -125,6 +139,8 @@ class ReviewCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
             return True
         return False
 
+
+
 #Escape room dodaje
 class ErCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
     model = EscapeRoom
@@ -139,6 +155,7 @@ class ErCreateView(LoginRequiredMixin, UserPassesTestMixin,CreateView):
             return True
         return False
 
+
 class ErDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = EscapeRoom
     template_name = 'testER/er_confirm_delete.html'
@@ -148,6 +165,7 @@ class ErDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user.profile == er.wlasc_id:
             return True
         return False
+
 
 class ErUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = EscapeRoom
@@ -163,6 +181,7 @@ class ErUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+
 #your escape rooms
 def your_er(request):
     er = EscapeRoom.objects.filter(wlasc_id=request.user.profile)
@@ -171,11 +190,13 @@ def your_er(request):
     }
     return render(request,"testER/companies_user.html", er_dict)
 
+
 #all companies
 class erListView(ListView):
     model = EscapeRoom
     template_name = 'testER/companies.html'
     context_object_name = 'escaperooms'
+
 
 #rooms from company
 def rooms_from_company(request, *args, **kwargs):
@@ -188,6 +209,7 @@ def rooms_from_company(request, *args, **kwargs):
     }
     return render(request, "testER/company_rooms.html",context)
 
+
 def search_room(request):
     if request.method == "POST":
         searched = request.POST['searched']
@@ -195,7 +217,6 @@ def search_room(request):
         return render(request, "testER/search_rooms.html", {'searched':searched, 'rooms':rooms})
     else:
         return render(request, "testER/search_rooms.html")
-
 
 
 def change_reservations(request):
@@ -224,7 +245,6 @@ def change_reservations(request):
 
         return render(request, 'testER/reservations_to_visited.html', context)
     return render(request, 'testER/reservations_to_visited.html', context)
-
 
 
 def see_stats(request):
@@ -271,14 +291,22 @@ def user_stats(request):
 
 #promocje
 
-class PromCreateView(LoginRequiredMixin, CreateView):
+
+class PromCreateView(LoginRequiredMixin, FormView):
     model = Promocje
     template_name = 'testER/add_promotion.html'
-    fields = ['nazwa', 'data_rozpoczecia', 'data_zakonczenia', 'procent']
+    form_class = AddPromForm
+    success_url = reverse_lazy('Escape_Room_app')
+
     def form_valid(self, form):
+        form.save()
         return super().form_valid(form)
     def test_func(self):
         if self.request.user.profile.user_type == "W":
             return True
         return False
 
+
+class testview(FormView):
+    form_class = AddResForm
+    template_name = 'testER/add_room.html'

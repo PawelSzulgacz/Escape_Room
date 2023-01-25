@@ -5,7 +5,7 @@
         <p> Kategoria - {{object.get_kategoria_display}}</p>
         <p> Opis - {{object.opis}}</p>
         <p> Trudność - {{object.get_trudnosc_display }}</p>
-        <p> Czas na przejście - {{object.max_czas}}</p>
+        <p> Czas na przejście - {{object.max_czas}} minut</p>
         <p> Cena - {{object.kat_cenowa.cena}}</p>
         {% if object.promocje %}
         <h2>Promocja! Teraz aż {{ object.promocje.procent }}% taniej, tylko do {{ object.promocje.data_zakonczenia }} </h2>
@@ -21,8 +21,13 @@
 {% endif %}
 
 <br><br>
+        {% if ocena != 0 %}
+                Średnia ocena pokoju: {{ ocena }}/10
+        {% else %}
+                Narazie nie ma ocen tego pokoju.
+        {% endif %}
         {% for review in reviews %}
-<p> {{ review.klient_id.user.username }} </p>
+<p> Komentarz od - {{ review.klient_id.user.username }} </p>
                 {{ review.ocena }} ----
                 {{ review.komentarz }}
         <hr>

@@ -8,7 +8,14 @@
 
     <h2>Odwiedzone pokoje</h2>
     {% for visit in visited %}
-        <h3>{{ visit.pokoj_id.nazwa }}</h3>
+        <h3>{{ visit.pokoj_id.nazwa }} -
+            {% if visit.ukonczony %}
+                Wyszedłeś i zostało Ci {{ visit.czas_wyjscia }} minut
+            {% else %}
+                Niestety nie udało Ci się wyjść w wyznaczonym czasie
+            {% endif %}
+
+        </h3>
 
 
     {% endfor%}
