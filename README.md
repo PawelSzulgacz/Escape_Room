@@ -11,9 +11,8 @@ Client perspective:
 ### Requirements ###
 
 * pgAdmin 4
-* Elixir 1.13.3
-* Phoenix 1.6.6
-* Unoccupied port 4000
+* Python 3.11.2
+* Django 3
 
 ### Run application locally ###
 
