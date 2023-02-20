@@ -1,12 +1,12 @@
 ### Introduction ###
 
 A Project which allows to manage different Escape Room companies.
-From the perspective of the company managment:
--adding, deleting, modyfing company and Escape Rooms within
--checking Escape Room statistics and earned money
-Client perspective:
--reserving escape room
--commenting and adding ratings
+From the perspective of the company managment:<br>
+-adding, deleting, modyfing company and Escape Rooms within<br>
+-checking Escape Room statistics and earned money<br>
+Client perspective:<br>
+-reserving escape room<br>
+-commenting and adding ratings<br>
 
 ### Requirements ###
 
